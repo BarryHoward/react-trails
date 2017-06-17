@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+
+#root {
+    height: 500px;
+}
+
+
+.map-container {
+    height: 100%;
+}
