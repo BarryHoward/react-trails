@@ -1,13 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 
 //handsontable imports
-import moment from 'moment';
-import numbro from 'numbro';
-import pikaday from 'pikaday';
-import Zeroclipboard from 'zeroclipboard';
-import Handsontable from 'handsontable';
+// import moment from 'moment';
+// import numbro from 'numbro';
+// import pikaday from 'pikaday';
+// import Zeroclipboard from 'zeroclipboard';
+// import Handsontable from 'handsontable/dist/handsontable.full'
 import HotTable from 'react-handsontable';
 import 'handsontable/dist/handsontable.full.css';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import './index.css';
 
 //Google Maps imports
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+import { withGoogleMap, GoogleMap} from "react-google-maps";
 
 const ReactMap = withGoogleMap(props => (
   <GoogleMap

@@ -21,21 +21,36 @@ class Application extends React.Component {
 
 
   changeTable(changeArray, source){
-    var key;
     var change;
     var position;
     var targetMarker
     var newMarkers = this.state.markers
+    var tabVal = this.state.tableValues
+    var tabIndex
     if (changeArray) {
       for (var i=0; i<changeArray.length; i++){
         change = changeArray[i]
-        targetMarker = newMarkers[change[0]]
-        if (change[1] === 0) {
-          position = new window.google.maps.LatLng(change[3], targetMarker.position.lng())
-        } else {
-          position = new window.google.maps.LatLng(change[3], targetMarker.position.lng())
+        tabIndex = change[0]
+        targetMarker = newMarkers[tabIndex]
+        if (targetMarker) {
+          position = new window.google.maps.LatLng(
+            parseFloat(tabVal[tabIndex][0]),
+            parseFloat(tabVal[tabIndex][1]))
+          targetMarker.setPosition(position)
+        } else if (tabVal[tabIndex][0] && tabVal[tabIndex][1]){
+          var map = this.refs.rmap.state.map
+          var marker
+          marker = new window.google.maps.Marker({
+            position: {
+              lat: parseFloat(tabVal[tabIndex][0]),
+              lng: parseFloat(tabVal[tabIndex][1])
+            },
+            defaultAnimation: 2,
+            draggable: true,
+            map: map
+          })
+          newMarkers.push(marker)
         }
-        targetMarker.setPosition(position)
       }
 
       this.setState({
@@ -53,7 +68,6 @@ class Application extends React.Component {
 
   handleMapClick(event) {
     const position = event.latLng
-    console.log(position)
 
     var map = this.refs.rmap.state.map
     var marker
@@ -63,7 +77,6 @@ class Application extends React.Component {
       draggable: true,
       map: map
     })
-    console.log(marker)
 
     var newMarkers = this.state.markers
     newMarkers.push(marker)
