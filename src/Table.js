@@ -2,14 +2,10 @@ import React from 'react';
 import './index.css';
 
 //handsontable imports
-// import moment from 'moment';
-// import numbro from 'numbro';
-// import pikaday from 'pikaday';
-// import Zeroclipboard from 'zeroclipboard';
-// import Handsontable from 'handsontable/dist/handsontable.full'
-import HotTable from 'react-handsontable';
-import 'handsontable/dist/handsontable.full.css';
 
+import 'handsontable/dist/handsontable.full.js';
+import 'handsontable/dist/handsontable.full.css';
+import HotTable from 'react-handsontable';
 
 class Table extends React.Component {
 

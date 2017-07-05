@@ -2,6 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+
+// GET SCRIPT LOADER!
+// ONLY LOAD IN MAP AFTER GOOGLE SCRIPT HAS LOADED
+// ONLY LOAD IN TABLE AFTER PIKADAY AND ZERO
+// GET THEM OUT OF THE INDEX FILE
+// REORGANIZE THIS SHIT
+//   - Get Everything out of Index and get it into App.js (see template for example)
+//   - Convert Map.js to native googlemaps
+//   - Move all Map specific and table Specific functions into files
+
+
 // import google map
 import {ReactMap} from './Map.js'
 
@@ -10,30 +21,72 @@ import {Table} from './Table.js';
 
 class Application extends React.Component {
 
-  state = {
-    markers: [],
-    tableValues: []
-  };
+  constructor(){
+    super();
+    this.state = {
+      path: [],
+      markers: [],
+      tableValues: []
+    };
+  }
 
   handleMapLoad = this.handleMapLoad.bind(this);
   handleMapClick = this.handleMapClick.bind(this);
   changeTable = this.changeTable.bind(this)
+  updatePathFromTable = this.updatePathFromTable.bind(this)
+  updatePathFromMarkers = this.updatePathFromMarkers.bind(this)
+  createTrailPoly = this.createTrailPoly.bind(this)
 
+  updatePathFromTable(){
+    if (!this.state.trailPoly){
+      this.createTrailPoly()
+    }
+    let newPath = [];
+    this.state.tableValues.forEach(function(element){
+      let pathValue = new window.google.maps.LatLng(
+        parseFloat(element[0]), 
+        parseFloat(element[1])
+      )
+      newPath.push(pathValue)
+    })
+
+    let trailPoly = this.state.trailPoly
+    trailPoly.setPath(newPath)
+    this.setState({
+      path: newPath,
+      trailPoly: trailPoly
+    })
+  }
+
+  updatePathFromMarkers(){
+    console.log(this.state.trailPoly)
+    if (!this.state.trailPoly){
+      this.createTrailPoly()
+    }
+    let newPath = []
+    this.state.markers.forEach(function(element){
+      let pathValue = element.getPosition()
+      newPath.push(pathValue)
+    })
+    let trailPoly = this.state.trailPoly
+    trailPoly.setPath(newPath)
+    this.setState({
+      path: newPath,
+      trailPoly: trailPoly
+    })
+  }
 
   changeTable(changeArray, source){
-    var change;
-    var position;
-    var targetMarker
     var newMarkers = this.state.markers
     var tabVal = this.state.tableValues
-    var tabIndex
-    if (changeArray) {
+    if (changeArray != null) {
+      this.updatePathFromTable();
       for (var i=0; i<changeArray.length; i++){
-        change = changeArray[i]
-        tabIndex = change[0]
-        targetMarker = newMarkers[tabIndex]
+        var change = changeArray[i]
+        var tabIndex = change[0]
+        var targetMarker = newMarkers[tabIndex]
         if (targetMarker) {
-          position = new window.google.maps.LatLng(
+          var position = new window.google.maps.LatLng(
             parseFloat(tabVal[tabIndex][0]),
             parseFloat(tabVal[tabIndex][1]))
           targetMarker.setPosition(position)
@@ -59,11 +112,28 @@ class Application extends React.Component {
     }
   }
 
+  createTrailPoly(){
+    console.log(this.path)
+    let map = this.refs.rmap.state.map
+    var trailPoly = new window.google.maps.Polyline({
+      path: this.state.path,
+      // geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 3
+    });
+    trailPoly.setMap(map);
+
+    this.setState({
+      trailPoly: trailPoly
+    })
+  }
+
   handleMapLoad(map) {
-    this._mapComponent = map;
-    if (map) {
-      console.log(map.getZoom());
-    }
+    // this._mapComponent = map;
+    // if (map) {
+    //   // console.log(map.getZoom());
+    // }
   }
 
   handleMapClick(event) {
@@ -88,6 +158,8 @@ class Application extends React.Component {
       markers: newMarkers,
       tableValues: newTableValues
     })
+
+    this.updatePathFromMarkers();
 
   }
 
@@ -114,9 +186,11 @@ class Application extends React.Component {
       </div>
     );
   }
+
+
 }
 
-
+//
 //===============================================================================================
 
 ReactDOM.render(<Application />, document.getElementById('root'));

@@ -6,7 +6,7 @@ import { withGoogleMap, GoogleMap} from "react-google-maps";
 
 const ReactMap = withGoogleMap(props => (
   <GoogleMap
-   // ref={props.onMapLoad}
+    ref={props.onMapLoad}
     defaultZoom={3}
     defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
     onClick={props.onMapClick}
